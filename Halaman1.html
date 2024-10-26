@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ditaaa</title>
+    <style>
+       body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column; 
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 130vh; /* Menambah tinggi minimum untuk memperpanjang scroll */
+    margin: 0;
+    background: linear-gradient(180deg, #1a2980 0%, #26d0ce 100%);
+    padding: 20px; 
+    overflow-y: auto; 
+    position: relative;
+}
+
+
+        img {
+            max-width: 100%;
+            height: auto; 
+            margin-bottom: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+        }
+
+        .typing-text {
+    font-size: 20px; 
+    overflow: hidden;
+    max-width: 100%;
+    white-space: normal; 
+    word-break: break-word; 
+    line-height: 1.0; /* Mengurangi jarak antar baris */
+    text-align: justify; /* Ubah menjadi justify untuk rata kiri-kanan */
+    color: white;
+}
+
+        @media (max-width: 600px) {
+            .typing-text {
+                font-size: 18px; 
+            }
+        }
+
+        /* Sembunyikan audio dari tampilan */
+        audio {
+            display: none; /* Menyembunyikan elemen audio dari tampilan */
+        }
+
+        /* Gaya tombol WhatsApp */
+        #whatsapp-button {
+            display: none; /* Sembunyikan tombol pada awalnya */
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #whatsapp-button:hover {
+            background-color: #20b958;
+        }
+
+        /* Fullscreen canvas untuk petasan */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Supaya tidak mengganggu interaksi pengguna */
+            z-index: -1; /* Di belakang semua elemen */
+        }
+
+        /* Hati animasi */
+        .love {
+            position: absolute;
+            bottom: 0;
+            font-size: 50px;
+            color: #ff69b4;
+            animation: moveUp 5s linear infinite, fadeOut 5s ease-in-out infinite;
+        }
+
+        @keyframes moveUp {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+          /* Gaya untuk konfeti */
+    .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #fff;
+        border-radius: 50%;
+        opacity: 0.7;
+        animation: confetti-fall 3s linear infinite;
+    }
+
+    /* Animasi konfeti jatuh */
+    @keyframes confetti-fall {
+        0% {
+            transform: translateY(-100vh);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh);
+            opacity: 0;
+        }
+    }
+
+    /* Variasi ukuran konfeti */
+    .confetti.small {
+        width: 3px;
+        height: 3px;
+    }
+
+    .confetti.large {
+        width: 8px;
+        height: 8px;
+    }
+
+    img {
+    max-width: 100%;
+    height: auto; 
+    margin-bottom: 20px; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 255, 255, 0.7),  /* Bayangan cyan */
+                0 8px 16px rgba(0, 255, 255, 0.5), 
+                0 12px 24px rgba(0, 255, 255, 0.3); /* Menambahkan beberapa lapisan bayangan */
+}   
+
+
+    </style>
+</head>
+<body>
+
+    <canvas id="fireworksCanvas"></canvas> <!-- Kanvas untuk petasan -->
+    
+    <img src="fix.jpeg" alt="Foto"> 
+    <div class="typing-text" id="typing"></div>
+
+    <!-- Audio dengan autoplay dan loop -->
+    <audio id="background-music" autoplay loop>
+        <source src="Backsound.mp3" type="audio/mpeg"> 
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Tombol WhatsApp -->
+ <!--<button id="whatsapp-button" onclick="window.location.href='whatsapp-message.html'">Reply to message</button>-->
+
+
+    <script>
+      const texts = [
+    "Halooo Ditaaa, selamat bertambah usia! 🎂✨",
+    "Hari ini, dunia merayakan kehadiranmu, sosok yang mampu mengubah kesedihan menjadi tawa. 🎭🫡",
+    "Di hari yang istimewa ini, biarkan hatimu berbisik cerita-cerita manis tentang harapan dan impian yang akan terwujud. Seperti penulis yang melukiskan karakter-karakter hebat, kamu adalah bintang dalam novel kehidupan ini. 🌟🫰🏼",
+    "Jaga kesehatan dan semangatmu yaa. semoga setiap harimu diisi dengan cinta dan kebahagiaan. 🍭💞",
+    "Kamu tau, setiap detik yang kamu habiskan di dunia ini ada kisah baru yang kamu tulis dalam hidup orang-orang di sekitarmu. ⌚️📖",
+    "Aku harap kamu sadar bahwa kehadiranmu itu bukan hanya sekedar momen,kamu itu bagian dari keindahan yang jarang dimiliki siapapun. 👸🏻🩷",
+    "Seperti bintang di langit, kamu membuat hidup ini lebih berwarna dan berarti. 🌈💫",
+    "Tetap jadi Dita yang selalu ceria dan penuh semangat yaa. dunia jadi lebih indah karena ada kamu. 🫵🏻🫶🏻",
+    "Terima kasih suda lahir.😇🤍",
+    "Terima kasih suda mau hidup.😸🩷",
+    "Terima kasih suda hadir dikehidupanku.🫂💝",
+    "Lopyuuu ♾️❤️🩷🧡💛💚💙🩵💜🖤🩶🤍🤎♾️",
+    "From 𝓭",
+];
+
+    
+
+        let index = 0;
+        const typingElement = document.getElementById('typing');
+        const typingSpeed = 60; // Kecepatan mengetik
+        const whatsappButton = document.getElementById('whatsapp-button'); // Tombol WhatsApp
+
+        function typeText() {
+            if (index < texts.length) {
+                const paragraph = document.createElement('p'); 
+                paragraph.textContent = ''; 
+                typingElement.appendChild(paragraph); 
+                let charIndex = 0;
+
+                function typeChar() {
+                    if (charIndex < texts[index].length) {
+                        paragraph.textContent += texts[index].charAt(charIndex);
+                        charIndex++;
+                        setTimeout(typeChar, typingSpeed);
+                    } else {
+                        index++; 
+                        if (index < texts.length) {
+                            setTimeout(typeText, 500); 
+                        } else {
+                            // Tampilkan tombol WhatsApp setelah semua teks selesai diketik
+                            whatsappButton.style.display = 'block';
+                        }
+                    }
+                }
+
+                typeChar();
+            }
+        }
+
+        typeText(); // Mulai animasi mengetik
+
+        // Petasan (Fireworks) effect
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+        let fireworks = [];
+
+        class Firework {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height;
+                this.targetY = Math.random() * (canvas.height / 2);
+                this.speed = 3 + Math.random() * 2;
+                this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                this.sparks = [];
+            }
+
+            update() {
+                this.y -= this.speed;
+                if (this.y <= this.targetY) {
+                    this.explode();
+                    return true;
+                }
+                return false;
+            }
+
+            explode() {
+                for (let i = 0; i < 50; i++) {
+                    this.sparks.push(new Spark(this.x, this.y, this.color));
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        class Spark {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.angle = Math.random() * Math.PI * 2;
+                this.speed = Math.random() * 3 + 2;
+                this.life = Math.random() * 30 + 20;
+            }
+
+            update() {
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+                this.life--;
+                return this.life <= 0;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (Math.random() < (window.innerWidth < 600 ? 0.03 : 0.05)) {
+        fireworks.push(new Firework());
+            }
+
+            fireworks = fireworks.filter(firework => {
+                if (firework.update()) return false;
+                firework.draw();
+                firework.sparks = firework.sparks.filter(spark => {
+                    if (spark.update()) return false;
+                    spark.draw();
+                    return true;
+                });
+                return true;
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        animate(); // Mulai animasi petasan
+
+        // Animasi love (hati)
+        function createLove() {
+            const love = document.createElement('div');
+            love.classList.add('love');
+            love.textContent = '🩷';
+            love.style.left = `${Math.random() * 90}vw`; // Posisi horizontal acak
+            love.style.animationDuration = `${Math.random() * 3 + 3}s`; // Durasi animasi acak
+            document.body.appendChild(love);
+
+            setTimeout(() => {
+                love.remove(); // Hapus elemen setelah animasi selesai
+            }, 5000);
+        }
+
+        setInterval(createLove, 7000); // Buat hati baru setiap detik
+        function createConfetti() {
+            const confettiCount = window.innerWidth < 600 ? 50 : 100; // Lebih sedikit konfeti di mobile
+        const confettiColors = ['#FF1461', '#18FF92', '#5A87FF', '#FBF38C']; // Warna-warna konfeti
+        
+        for (let i = 0; i < confettiCount; i++) {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+            confetti.style.left = Math.random() * 90 + 'vw'; // Posisi horizontal acak
+            confetti.style.animationDuration = Math.random() * 3 + 2 + 's'; // Durasi animasi acak
+            confetti.style.opacity = Math.random();
+            
+            // Variasi ukuran
+            if (Math.random() > 0.5) {
+                confetti.classList.add('small');
+            } else {
+                confetti.classList.add('large');
+            }
+            
+            document.body.appendChild(confetti);
+            
+            // Hapus konfeti setelah animasi selesai
+            setTimeout(() => {
+                confetti.remove();
+            }, 5000);
+        }
+    }
+
+    // Panggil fungsi konfeti saat halaman dimuat
+    window.onload = createConfetti;
+
+    
+    </script>
+</body>
+</html>
